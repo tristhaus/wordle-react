@@ -1,3 +1,4 @@
+const { evaluate } = require('../logic/game')
 const Game = require('../models/game')
 
 const gamesRouter = require('express').Router()
@@ -6,7 +7,7 @@ const maxAttempts = 6
 
 gamesRouter.post('/', async (request, response, next) => {
     try {
-        const game = new Game({ word: 'about', attempts: 0 })
+        const game = new Game({ word: 'about', attempts: 0 }) // todo replace by random word picker // todo allow to call for game by ID
 
         const result = await game.save()
 
@@ -38,13 +39,7 @@ gamesRouter.put('/:id', async (request, response, next) => {
         const refinedResult = {
             ...result,
             id: result._id.toString(),
-            hints: [
-                { letter: 't', status: 'elsewhere' },
-                { letter: 'h', status: 'unused' },
-                { letter: 'o', status: 'correct' },
-                { letter: 's', status: 'unused' },
-                { letter: 'e', status: 'unused' },
-            ]
+            hints: evaluate(guess.word, result.word)
         }
 
         response.json(refinedResult)
