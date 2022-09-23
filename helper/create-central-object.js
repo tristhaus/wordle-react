@@ -3,7 +3,7 @@ const fs = require('fs');
 try {
     // generate object and write it to file
 
-    const data = fs.readFileSync('five.dict', 'utf8');
+    const data = fs.readFileSync('uniq.dict', 'utf8');
 
     const root = {}
 
@@ -23,7 +23,7 @@ try {
 
     const result = JSON.stringify(root)
     // console.log(result);
-    fs.writeFileSync('five.json', result, 'utf8')
+    fs.writeFileSync('uniq.json', result, 'utf8')
 
     // benchmarking
 
