@@ -1,4 +1,5 @@
 const { evaluate } = require('../logic/game')
+const { getId, getWord } = require('../logic/id')
 const Game = require('../models/game')
 
 const gamesRouter = require('express').Router()
@@ -7,7 +8,22 @@ const maxAttempts = 6
 
 gamesRouter.post('/', async (request, response, next) => {
     try {
-        const game = new Game({ word: 'about', attempts: 0 }) // todo replace by random word picker // todo allow to call for game by ID
+        let word = ''
+        const wordId = request.query.wordId
+
+        if (wordId !== undefined) {
+            try {
+                word = getWord(wordId)
+                // todo when calling for game by ID, validate word against dictionary
+            } catch (idError) {
+                throw { name: 'IdError', message: 'bad id' }
+            }
+        }
+        else {
+            word = 'facet' // todo replace by random word picker
+        }
+
+        const game = new Game({ word: word, wordId: getId(word), attempts: 0 })
 
         const result = await game.save()
 

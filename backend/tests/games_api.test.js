@@ -16,10 +16,32 @@ describe('game API', () => {
         expect(response.body).toBeDefined()
         expect(response.body.id).toBeDefined()
         expect(response.body.word).not.toBeDefined()
+        expect(response.body.wordId).toBeDefined()
+    })
+
+    test('POST with ID yields a new game', async () => {
+        const response = await api.post('/api/games?wordId=w1lO79SZ7w8kUiyDPOqjAw') // word: about
+
+        expect(response.body).toBeDefined()
+        expect(response.body.id).toBeDefined()
+        expect(response.body.word).not.toBeDefined()
+        expect(response.body.wordId).toBeDefined()
+    })
+
+    test('POST with bad ID results in 400', async () => {
+        const response = await api.post('/api/games?wordId=w1lO79SZ7w8kUiyDPOq') // word: N/A
+
+        expect(response.status).toBe(400)
+    })
+
+    test.failing('TODO: make not fail | POST with ID corresponding to non-existent word results in 400', async () => {
+        const response = await api.post('/api/games?wordId=bs8RCf9BQXfd66K4b5ByEw') // word: xxxxx
+
+        expect(response.status).toBe(400)
     })
 
     test('PUT with a valid guess yields a useful response', async () => {
-        const gameResponse = await api.post('/api/games')
+        const gameResponse = await api.post('/api/games?wordId=w1lO79SZ7w8kUiyDPOqjAw') // word: about
 
         const id = gameResponse.body.id
         const path = `/api/games/${id}`
@@ -33,6 +55,24 @@ describe('game API', () => {
             { letter: 'o', status: 'correct' },
             { letter: 's', status: 'unused' },
             { letter: 'e', status: 'unused' },
+        ])
+    })
+
+    test('PUT with the correct guess yields a winning response', async () => {
+        const gameResponse = await api.post('/api/games?wordId=w1lO79SZ7w8kUiyDPOqjAw') // word: about
+
+        const id = gameResponse.body.id
+        const path = `/api/games/${id}`
+        const guessResponse = await api.put(path).send({ word: 'about' })
+
+        expect(guessResponse.body).toBeDefined()
+        expect(guessResponse.body.id).toBeDefined()
+        expect(guessResponse.body.hints).toEqual([
+            { letter: 'a', status: 'correct' },
+            { letter: 'b', status: 'correct' },
+            { letter: 'o', status: 'correct' },
+            { letter: 'u', status: 'correct' },
+            { letter: 't', status: 'correct' },
         ])
     })
 
