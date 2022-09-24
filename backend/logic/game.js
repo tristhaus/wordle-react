@@ -2,6 +2,12 @@ const unused = 'unused'
 const elsewhere = 'elsewhere'
 const correct = 'correct'
 
+/**
+ * Evaluates a guess against the reference
+ * @param {string} guess - The guess made by the player
+ * @param {string} reference - The word that should be guessed
+ * @returns {Array} An array of objects describing the letter and its status: 'unused', 'elsewhere', 'correct'
+ */
 const evaluate = (guess, reference) => {
     if (typeof (guess) !== 'string' || typeof (reference) !== 'string' || guess.length !== reference.length) {
         throw { message: 'input must be strings of equal length' }

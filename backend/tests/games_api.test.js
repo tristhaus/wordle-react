@@ -34,7 +34,7 @@ describe('game API', () => {
         expect(response.status).toBe(400)
     })
 
-    test.failing('TODO: make not fail | POST with ID corresponding to non-existent word results in 400', async () => {
+    test('POST with ID corresponding to non-existent word results in 400', async () => {
         const response = await api.post('/api/games?wordId=bs8RCf9BQXfd66K4b5ByEw') // word: xxxxx
 
         expect(response.status).toBe(400)

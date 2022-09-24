@@ -1,4 +1,5 @@
 const { evaluate } = require('../logic/game')
+const { getRandom, isValid } = require('../logic/dictionary')
 const { getId, getWord } = require('../logic/id')
 const Game = require('../models/game')
 
@@ -14,13 +15,17 @@ gamesRouter.post('/', async (request, response, next) => {
         if (wordId !== undefined) {
             try {
                 word = getWord(wordId)
-                // todo when calling for game by ID, validate word against dictionary
+
+                if (!isValid(word)) {
+                    response.status(400).send({ error: `invalid word: ${word}` })
+                    return next()
+                }
             } catch (idError) {
                 throw { name: 'IdError', message: 'bad id' }
             }
         }
         else {
-            word = 'facet' // todo replace by random word picker
+            word = getRandom()
         }
 
         const game = new Game({ word: word, wordId: getId(word), attempts: 0 })

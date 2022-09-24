@@ -13,6 +13,11 @@ const algorithm = 'aes-128-cbc'
 const utf8Encoding = 'utf8'
 const base64UrlEncoding = 'base64url'
 
+/**
+ * Gets the ID for a word
+ * @param {string} word - The word to derive the ID for
+ * @returns The derived ID
+ */
 const getId = word => {
     const cipher = crypto.createCipheriv(algorithm, key, iv)
     let id = cipher.update(word, utf8Encoding, base64UrlEncoding)
@@ -21,6 +26,11 @@ const getId = word => {
     return id
 }
 
+/**
+ * Gets the word corresponding to the provided ID.
+ * @param {string} id - A valid ID obtained from getId
+ * @returns The corresponding word
+ */
 const getWord = id => {
     const decipher = crypto.createDecipheriv(algorithm, key, iv)
     let word = decipher.update(id, base64UrlEncoding, utf8Encoding)

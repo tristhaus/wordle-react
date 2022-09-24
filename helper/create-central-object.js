@@ -3,7 +3,7 @@ const fs = require('fs');
 try {
     // generate object and write it to file
 
-    const data = fs.readFileSync('five.dict', 'utf8');
+    const data = fs.readFileSync('D:\\VSProject\\njs\\wordle-react\\helper\\uniq.dict', 'utf8');
 
     const root = {}
 
@@ -23,7 +23,7 @@ try {
 
     const result = JSON.stringify(root)
     // console.log(result);
-    fs.writeFileSync('five.json', result, 'utf8')
+    fs.writeFileSync('D:\\VSProject\\njs\\wordle-react\\helper\\five.json', result, 'utf8')
 
     // benchmarking
 
@@ -31,13 +31,13 @@ try {
         let node = root
 
         const chars = candidate.split('')
-        chars.forEach(char => {
+        for (const char of chars) {
             if (node[char] === undefined) {
                 return false
             }
 
             node = node[char]
-        })
+        }
 
         return true
     }
