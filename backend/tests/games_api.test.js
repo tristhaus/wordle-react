@@ -118,4 +118,20 @@ describe('game API', () => {
         expect(solutionResponse.body.solution).toBeDefined()
     })
 
+    test('DELETE makes game unavailable', async () => {
+        const gameResponse = await api.post('/api/games')
+
+        const id = gameResponse.body.id
+        const deletePath = `/api/games/${id}`
+        const deletionResponse = await api.delete(deletePath)
+
+        expect(deletionResponse.status).toBe(204)
+
+        const solutionPath = `/api/games/${id}/solution`
+        const solutionResponse = await api.get(solutionPath)
+
+        console.log(solutionResponse)
+
+        expect(solutionResponse.status).toBe(404)
+    })
 })

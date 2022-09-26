@@ -57,9 +57,14 @@ gamesRouter.put('/:id', async (request, response, next) => {
             { attempts: game.attempts + 1 },
             { new: true, runValidators: true, context: 'query' })
 
+        if (result === null) {
+            response.status(404).json({ error: 'not found' })
+            return
+        }
+
         const refinedResult = {
-            ...result,
             id: result._id.toString(),
+            wordId: result.wordId,
             hints: evaluate(guess.word, result.word)
         }
 
@@ -76,13 +81,28 @@ gamesRouter.get('/:id/solution', async (request, response, next) => {
             { attempts: maxAttempts + 1 },
             { new: true, runValidators: true, context: 'query' })
 
+        if (result === null) {
+            response.status(404).json({ error: 'not found' })
+            return
+        }
+
         const refinedResult = {
-            ...result,
             id: result._id.toString(),
+            wordId: result.wordId,
             solution: result.word
         }
 
         response.json(refinedResult)
+    } catch (error) {
+        next(error)
+    }
+})
+
+gamesRouter.delete('/:id', async (request, response, next) => {
+    try {
+        await Game.findByIdAndDelete(request.params.id)
+
+        response.status(204).end()
     } catch (error) {
         next(error)
     }
