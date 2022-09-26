@@ -32,7 +32,7 @@ gamesRouter.post('/', async (request, response, next) => {
 
         const result = await game.save()
 
-        response.json(result)
+        response.status(201).json(result)
     } catch (error) {
         next(error)
     }

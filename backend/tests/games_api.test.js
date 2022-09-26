@@ -13,6 +13,7 @@ describe('game API', () => {
     test('POST yields a new game', async () => {
         const response = await api.post('/api/games')
 
+        expect(response.status).toBe(201)
         expect(response.body).toBeDefined()
         expect(response.body.id).toBeDefined()
         expect(response.body.word).not.toBeDefined()
@@ -22,6 +23,7 @@ describe('game API', () => {
     test('POST with ID yields a new game', async () => {
         const response = await api.post('/api/games?wordId=w1lO79SZ7w8kUiyDPOqjAw') // word: about
 
+        expect(response.status).toBe(201)
         expect(response.body).toBeDefined()
         expect(response.body.id).toBeDefined()
         expect(response.body.word).not.toBeDefined()

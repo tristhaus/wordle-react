@@ -1,5 +1,5 @@
 {
-  "name": "template-backend",
+  "name": "wordle-react-backend",
   "version": "0.0.1",
   "description": "My heroku-valid template for the backend",
   "main": "index.js",
