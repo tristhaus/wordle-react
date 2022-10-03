@@ -18,7 +18,7 @@ gamesRouter.post('/', async (request, response, next) => {
 
                 if (!isValid(word)) {
                     response.status(400).send({ error: `invalid word: ${word}` })
-                    return next()
+                    return
                 }
             } catch (idError) {
                 throw { name: 'IdError', message: 'bad id' }
@@ -44,12 +44,19 @@ gamesRouter.put('/:id', async (request, response, next) => {
 
         if (typeof (guess.word) !== 'string' || !/^[a-z]{5}$/.test(guess.word)) {
             response.status(400).json({ error: 'invalid guess' })
+            return
+        }
+
+        if (!isValid(guess.word)) {
+            response.status(400).json({ error: 'not a word' })
+            return
         }
 
         const game = await Game.findById(request.params.id)
 
         if (game.attempts >= maxAttempts) {
             response.status(400).json({ error: 'too many attempts' })
+            return
         }
 
         const result = await Game.findByIdAndUpdate(

@@ -89,6 +89,19 @@ describe('game API', () => {
 
     })
 
+    test('PUT with non-existent word yields 400', async () => {
+        const gameResponse = await api.post('/api/games')
+
+        const id = gameResponse.body.id
+        const path = `/api/games/${id}`
+
+        const guessResponse = await api.put(path).send({ word: 'xxxxx' })
+
+        expect(guessResponse.status).toBe(400)
+        expect(guessResponse.body).toEqual({ error: 'not a word' })
+
+    })
+
     test('PUT with too many attempts yields 400', async () => {
         const gameResponse = await api.post('/api/games')
 
@@ -129,8 +142,6 @@ describe('game API', () => {
 
         const solutionPath = `/api/games/${id}/solution`
         const solutionResponse = await api.get(solutionPath)
-
-        console.log(solutionResponse)
 
         expect(solutionResponse.status).toBe(404)
     })
