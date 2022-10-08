@@ -125,6 +125,32 @@ describe('Game functionality', function () {
             cy.get('#giveUpButton').should('be.disabled')
             cy.get('#messageDiv').should('include.text', 'Solution was:')
         })
+
+        it('new game button clears game', function () {
+            cy.visit('http://localhost:3000')
+
+            var looper = Array.from({ length: 2 }, (value, index) => index)
+            cy.wrap(looper).each(() => {
+                cy.get('#guessText').type('reads', { delay: 100 })
+                cy.get('#submitButton').should('not.be.disabled')
+                cy.get('#submitButton').click()
+            })
+
+            cy.get('.hintArea').find('.hintLetter').as('hintLetters')
+            cy.get('@hintLetters').eq(0).should('have.text', 'r')
+            cy.get('@hintLetters').eq(1).should('have.text', 'e')
+            cy.get('@hintLetters').eq(2).should('have.text', 'a')
+            cy.get('@hintLetters').eq(3).should('have.text', 'd')
+            cy.get('@hintLetters').eq(4).should('have.text', 's')
+
+            cy.get('#newGameButton').click()
+
+            cy.get('@hintLetters').eq(0).should('be.empty')
+            cy.get('@hintLetters').eq(1).should('be.empty')
+            cy.get('@hintLetters').eq(2).should('be.empty')
+            cy.get('@hintLetters').eq(3).should('be.empty')
+            cy.get('@hintLetters').eq(4).should('be.empty')
+        })
     })
 
     const wordIdAbout = 'w1lO79SZ7w8kUiyDPOqjAw'
@@ -139,11 +165,20 @@ describe('Game functionality', function () {
             cy.get('#guessText').type('about', { delay: 100 })
             cy.get('#submitButton').click()
 
-            cy.contains('span', 'a').should('have.css', 'background-color', colorCorrect)
-            cy.contains('span', 'b').should('have.css', 'background-color', colorCorrect)
-            cy.contains('span', 'o').should('have.css', 'background-color', colorCorrect)
-            cy.contains('span', 'u').should('have.css', 'background-color', colorCorrect)
-            cy.contains('span', 't').should('have.css', 'background-color', colorCorrect)
+            cy.get('.hintArea').find('.hintLetter').as('hintLetters')
+            cy.get('@hintLetters').eq(0).should('have.text', 'a').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(1).should('have.text', 'b').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(2).should('have.text', 'o').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(3).should('have.text', 'u').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(4).should('have.text', 't').and('have.css', 'background-color', colorCorrect)
+        })
+
+        it('after winning, the submit button is disabled', function () {
+            cy.visit(`http://localhost:3000/${wordIdAbout}`)
+            cy.get('#guessText').type('about', { delay: 100 })
+            cy.get('#submitButton').click()
+
+            cy.get('#submitButton').should('be.disabled')
         })
 
         it('page acts on submit input and marks it correctly', function () {
@@ -151,11 +186,12 @@ describe('Game functionality', function () {
             cy.get('#guessText').type('those', { delay: 100 })
             cy.get('#submitButton').click()
 
-            cy.contains('span', 't').should('have.css', 'background-color', colorElsewhere)
-            cy.contains('span', 'h').should('have.css', 'background-color', colorUnused)
-            cy.contains('span', 'o').should('have.css', 'background-color', colorCorrect)
-            cy.contains('span', 's').should('have.css', 'background-color', colorUnused)
-            cy.contains('span', 'e').should('have.css', 'background-color', colorUnused)
+            cy.get('.hintArea').find('.hintLetter').as('hintLetters')
+            cy.get('@hintLetters').eq(0).should('have.text', 't').should('have.css', 'background-color', colorElsewhere)
+            cy.get('@hintLetters').eq(1).should('have.text', 'h').should('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(2).should('have.text', 'o').should('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(3).should('have.text', 's').should('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(4).should('have.text', 'e').should('have.css', 'background-color', colorUnused)
         })
 
         it('page acts on correct guess, marks it and sets button state correctly', function () {
@@ -181,6 +217,21 @@ describe('Game functionality', function () {
             cy.get('#submitButton').should('be.disabled')
             cy.get('#giveUpButton').should('be.disabled')
             cy.get('#messageDiv').should('have.text', 'Congratulations!')
+        })
+
+        it('new game button clears game', function () {
+            cy.visit(`http://localhost:3000/${wordIdAbout}`)
+            cy.get('#guessText').type('about', { delay: 100 })
+            cy.get('#submitButton').click()
+
+            cy.get('#submitButton').should('be.disabled')
+
+            cy.get('#newGameButton').click()
+
+            cy.get('#guessText').type('about', { delay: 100 })
+            cy.get('#submitButton').click()
+
+            cy.get('#submitButton').should('not.be.disabled')
         })
     })
 

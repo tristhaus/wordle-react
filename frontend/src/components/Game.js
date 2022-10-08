@@ -7,7 +7,7 @@ const state = {
     playing: 'playing',
     gaveUp: 'gaveUp',
     solved: 'solved',
-    ranOut: 'randOut',
+    ranOut: 'ranOut',
 }
 
 const Game = ({
@@ -83,6 +83,13 @@ const Game = ({
         await getSolution()
     }
 
+    const handleNewGame = async () => {
+        setGuess('')
+        setAllHints([])
+        setMessage('')
+        fetchGame(null)
+    }
+
     const submitIsDisabled = guess.length !== 5 || gameState !== state.playing
     const giveUpIsDisabled = gameState !== state.playing
 
@@ -97,6 +104,7 @@ const Game = ({
             <button id="submitButton" disabled={submitIsDisabled} style={{ margin: '0.5em' }} onClick={handleSubmit}>Submit</button>
             <br />
             <button id="giveUpButton" disabled={giveUpIsDisabled} style={{ margin: '0.5em' }} onClick={handleGiveUp}>Give up</button>
+            <button id="newGameButton" style={{ margin: '0.5em' }} onClick={handleNewGame}>New game</button>
         </div>
     </div>
     )
