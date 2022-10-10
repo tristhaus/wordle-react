@@ -2,6 +2,9 @@ import { PropTypes } from 'prop-types'
 
 const HintLetter = ({ data, lineType }) => {
     const style = {
+        display: 'inline-block',
+        width:'1.2em',
+        height:'1.2em',
         paddingTop: 7,
         paddingBottom: 7,
         paddingLeft: 7,
@@ -29,8 +32,10 @@ const HintLetter = ({ data, lineType }) => {
         style.backgroundColor = 'white'
     }
 
+    const content = data.letter || '\u200b' // zero-width non-breaking space
+
     return (
-        <span style={style} className='hintLetter'>{data.letter}</span>
+        <span style={style} className='hintLetter'>{content}</span>
     )
 }
 

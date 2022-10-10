@@ -2,6 +2,7 @@ import gameService from '../services/game'
 import HintArea from './HintArea'
 import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
+import KeyboardArea from './KeyboardArea'
 
 const state = {
     playing: 'playing',
@@ -87,19 +88,35 @@ const Game = ({
         setGuess('')
         setAllHints([])
         setMessage('')
-        fetchGame(null)
+        await fetchGame(null)
+    }
+
+    const handleAddGuessLetter = letter => {
+        if (guess.length === 5) {
+            return
+        }
+
+        setGuess(guess + letter)
+    }
+
+    const handleRemoveGuessLetter = () => {
+        if (guess.length === 0) {
+            return
+        }
+
+        setGuess(guess.substring(0, guess.length - 1))
     }
 
     const submitIsDisabled = guess.length !== 5 || gameState !== state.playing
     const giveUpIsDisabled = gameState !== state.playing
 
-    return (<div style={{ marginRight: 'auto', marginLeft: 'auto', width: '200px' }}>
-        <div>
+    return (<div style={{ marginRight: 'auto', marginLeft: 'auto', width: '400px' }}>
+        <div style={{ textAlign: 'center' }}>
             <HintArea allHints={allHints} guess={guess} />
         </div>
         <div id="messageDiv" style={{ minHeight: '1em', margin: '0.5em' }} >{message}</div>
-        <div>
-            <input type="text" id="guessText" maxLength={5} value={guess} name="Input" style={{ margin: '0.5em' }} onChange={({ target }) => setGuess(target.value)} />
+        <div style={{ textAlign: 'center' }}>
+            <KeyboardArea allHints={allHints} addGuessLetter={handleAddGuessLetter} removeGuessLetter={handleRemoveGuessLetter} />
             <br />
             <button id="submitButton" disabled={submitIsDisabled} style={{ margin: '0.5em' }} onClick={handleSubmit}>Submit</button>
             <br />
