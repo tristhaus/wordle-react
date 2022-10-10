@@ -76,9 +76,15 @@ describe('Game functionality', function () {
         })
 
         it('page acts on submit input, puts further input in right line', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit('http://localhost:3000')
             cy.get('#guessText').type('reads', { delay: 100 })
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
             cy.get('#guessText').type('more', { delay: 100 })
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
@@ -111,6 +117,11 @@ describe('Game functionality', function () {
         })
 
         it('page allows to make six guesses, no more, shows solution', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit('http://localhost:3000')
 
             var looper = Array.from({ length: 6 }, (value, index) => index)
@@ -118,6 +129,7 @@ describe('Game functionality', function () {
                 cy.get('#guessText').type('reads', { delay: 100 })
                 cy.get('#submitButton').should('not.be.disabled')
                 cy.get('#submitButton').click()
+                cy.wait('@submitGuess')
             })
 
             cy.get('#guessText').type('reads', { delay: 100 })
@@ -171,6 +183,7 @@ describe('Game functionality', function () {
             cy.get('@hintLetters').eq(2).should('have.text', 'o').and('have.css', 'background-color', colorCorrect)
             cy.get('@hintLetters').eq(3).should('have.text', 'u').and('have.css', 'background-color', colorCorrect)
             cy.get('@hintLetters').eq(4).should('have.text', 't').and('have.css', 'background-color', colorCorrect)
+            cy.get('#messageDiv').should('include.text', 'Congratulations!')
         })
 
         it('after winning, the submit button is disabled', function () {
@@ -195,11 +208,19 @@ describe('Game functionality', function () {
         })
 
         it('page acts on correct guess, marks it and sets button state correctly', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.get('#guessText').type('those', { delay: 100 })
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
+
             cy.get('#guessText').type('about', { delay: 100 })
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
             cy.get('@hintLetters').eq(0).should('have.text', 't').and('have.css', 'background-color', colorElsewhere)
@@ -220,17 +241,34 @@ describe('Game functionality', function () {
         })
 
         it('new game button clears game', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
+            cy.intercept({
+                method: 'POST',
+                url: '/api/games',
+            }).as('newGame')
+
             cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.get('#guessText').type('about', { delay: 100 })
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
+            cy.get('#messageDiv').should('include.text', 'Congratulations!')
             cy.get('#submitButton').should('be.disabled')
 
             cy.get('#newGameButton').click()
+            cy.wait('@newGame')
 
             cy.get('#guessText').type('about', { delay: 100 })
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
+            cy.get('#messageDiv').should('not.include.text', 'Congratulations!')
+
+            cy.get('#guessText').type('lucky', { delay: 100 })
             cy.get('#submitButton').should('not.be.disabled')
         })
     })
