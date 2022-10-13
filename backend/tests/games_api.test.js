@@ -18,6 +18,7 @@ describe('game API', () => {
         expect(response.body.id).toBeDefined()
         expect(response.body.word).not.toBeDefined()
         expect(response.body.wordId).toBeDefined()
+        expect(response.body.deploymentUrl).toBeDefined()
     })
 
     test('POST with ID yields a new game', async () => {
@@ -28,6 +29,7 @@ describe('game API', () => {
         expect(response.body.id).toBeDefined()
         expect(response.body.word).not.toBeDefined()
         expect(response.body.wordId).toBeDefined()
+        expect(response.body.deploymentUrl).toBeDefined()
     })
 
     test('POST with bad ID results in 400', async () => {

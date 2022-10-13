@@ -1,3 +1,4 @@
+const config = require('../utils/config')
 const { evaluate } = require('../logic/game')
 const { getRandom, isValid } = require('../logic/dictionary')
 const { getId, getWord } = require('../logic/id')
@@ -32,7 +33,14 @@ gamesRouter.post('/', async (request, response, next) => {
 
         const result = await game.save()
 
-        response.status(201).json(result)
+        const apiModel = {
+            'wordId': result.wordId,
+            'attempts': result.attempts,
+            'id': result._id.toString(),
+            'deploymentUrl': `${config.DEPLOYMENT_URL}`,
+        }
+
+        response.status(201).json(apiModel)
     } catch (error) {
         next(error)
     }

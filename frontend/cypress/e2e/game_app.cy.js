@@ -7,13 +7,22 @@ describe('Game functionality', function () {
     const colorCorrect = 'rgb(0, 128, 0)' // green
     const colorNeverGuessed = 'rgb(255, 255, 255)' // white
 
+    Cypress.Commands.add('assertTextValueContainedInClipboard', value => {
+        cy.window().then(win => {
+            win.navigator.clipboard.readText().then(text => {
+                expect(text).to.eq(value)
+            })
+        })
+    })
+
     describe('basic functionality', function () {
 
-        it('page can be opened and is initially empty', function () {
+        it('page can be opened and is initially empty, has friendly message', function () {
             cy.visit('http://localhost:3000')
 
             cy.get('.hintArea').find('.hintLetter').each(value => cy.wrap(value).should('have.text', empty))
             cy.get('.keyboardArea').find('.keyboardButton').each(value => cy.wrap(value).should('have.css', 'background-color', colorNeverGuessed))
+            cy.get('#messageDiv').should('have.text', 'Make your first guess!')
         })
 
         it('page accepts input', function () {
@@ -174,6 +183,8 @@ describe('Game functionality', function () {
                 cy.wait('@submitGuess')
             })
 
+            cy.get('#messageDiv').should('include.text', 'Solution was:')
+
             cy.get('#keyboardR').click()
             cy.get('#keyboardE').click()
             cy.get('#keyboardA').click()
@@ -182,7 +193,6 @@ describe('Game functionality', function () {
 
             cy.get('#submitButton').should('be.disabled')
             cy.get('#giveUpButton').should('be.disabled')
-            cy.get('#messageDiv').should('include.text', 'Solution was:')
         })
 
         it('new game button clears game', function () {
@@ -242,6 +252,23 @@ describe('Game functionality', function () {
             cy.get('@hintLetters').eq(3).should('have.text', 'u').and('have.css', 'background-color', colorCorrect)
             cy.get('@hintLetters').eq(4).should('have.text', 't').and('have.css', 'background-color', colorCorrect)
             cy.get('#messageDiv').should('include.text', 'Congratulations!')
+        })
+
+        it('page can be opened and provides correct link', function () {
+            cy.intercept({
+                method: 'POST',
+                url: '/api/games?wordId=w1lO79SZ7w8kUiyDPOqjAw',
+            }).as('startGame')
+
+            const referenceUrl = `http://localhost:3000/${wordIdAbout}`
+
+            cy.visit(referenceUrl)
+            cy.wait('@startGame')
+
+            cy.get('#shareLinkButton').click()
+
+            cy.get('#messageDiv').should('have.text', 'Link copied to clipboard!')
+            cy.assertTextValueContainedInClipboard(referenceUrl)
         })
 
         it('after winning, the submit button is disabled', function () {

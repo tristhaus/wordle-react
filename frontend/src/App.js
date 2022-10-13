@@ -11,6 +11,7 @@ const App = () => {
     const [guess, setGuess] = useState('')
     const [allHints, setAllHints] = useState([])
     const [message, setMessage] = useState('')
+    const [shareUrl, setShareUrl] = useState('')
 
     return (
         <Router>
@@ -22,6 +23,7 @@ const App = () => {
                         guess={guess} setGuess={setGuess}
                         allHints={allHints} setAllHints={setAllHints}
                         message={message} setMessage={setMessage}
+                        shareUrl={shareUrl} setShareUrl={setShareUrl}
                     />
                 } />
                 <Route path="/" element={
@@ -31,6 +33,7 @@ const App = () => {
                         guess={guess} setGuess={setGuess}
                         allHints={allHints} setAllHints={setAllHints}
                         message={message} setMessage={setMessage}
+                        shareUrl={shareUrl} setShareUrl={setShareUrl}
                     />
                 } />
             </Routes>

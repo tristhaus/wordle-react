@@ -16,7 +16,8 @@ const Game = ({
     gameState, setGameState,
     guess, setGuess,
     allHints, setAllHints,
-    message, setMessage }) => {
+    message, setMessage,
+    shareUrl, setShareUrl }) => {
 
     const id = useParams().id
 
@@ -26,7 +27,8 @@ const Game = ({
         if (success) {
             setGameId(data.id)
             setGameState(state.playing)
-            setMessage('')
+            setMessage('Make your first guess!')
+            setShareUrl(`${data.deploymentUrl}/${data.wordId}`)
         }
         else {
             setMessage(`Not a known game ID: ${id}`)
@@ -92,6 +94,11 @@ const Game = ({
     }
 
     const handleAddGuessLetter = letter => {
+        if(gameState === state.playing)
+        {
+            setMessage('')
+        }
+
         if (guess.length === 5) {
             return
         }
@@ -100,11 +107,21 @@ const Game = ({
     }
 
     const handleRemoveGuessLetter = () => {
+        if(gameState === state.playing)
+        {
+            setMessage('')
+        }
+
         if (guess.length === 0) {
             return
         }
 
         setGuess(guess.substring(0, guess.length - 1))
+    }
+
+    const handleShareLink = () => {
+        navigator.clipboard.writeText(shareUrl)
+        setMessage('Link copied to clipboard!')
     }
 
     const submitIsDisabled = guess.length !== 5 || gameState !== state.playing
@@ -114,7 +131,7 @@ const Game = ({
         <div style={{ textAlign: 'center' }}>
             <HintArea allHints={allHints} guess={guess} />
         </div>
-        <div id="messageDiv" style={{ minHeight: '1em', margin: '0.5em' }} >{message}</div>
+        <div id="messageDiv" style={{ minHeight: '1.2em', margin: '0.5em', textAlign: 'center' }} >{message}</div>
         <div style={{ textAlign: 'center' }}>
             <KeyboardArea allHints={allHints} addGuessLetter={handleAddGuessLetter} removeGuessLetter={handleRemoveGuessLetter} />
             <br />
@@ -122,6 +139,8 @@ const Game = ({
             <br />
             <button id="giveUpButton" disabled={giveUpIsDisabled} style={{ margin: '0.5em' }} onClick={handleGiveUp}>Give up</button>
             <button id="newGameButton" style={{ margin: '0.5em' }} onClick={handleNewGame}>New game</button>
+            <br />
+            <button id="shareLinkButton" style={{ margin: '0.5em' }} onClick={handleShareLink}>Share game</button>
         </div>
     </div>
     )
