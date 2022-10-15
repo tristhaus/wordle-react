@@ -23,6 +23,7 @@ describe('Game functionality', function () {
             cy.get('.hintArea').find('.hintLetter').each(value => cy.wrap(value).should('have.text', empty))
             cy.get('.keyboardArea').find('.keyboardButton').each(value => cy.wrap(value).should('have.css', 'background-color', colorNeverGuessed))
             cy.get('#messageDiv').should('have.text', 'Make your first guess!')
+            cy.get('#shareResultsButton').should('not.be.visible')
         })
 
         it('page accepts input', function () {
@@ -193,6 +194,33 @@ describe('Game functionality', function () {
 
             cy.get('#submitButton').should('be.disabled')
             cy.get('#giveUpButton').should('be.disabled')
+            cy.get('#shareResultsButton').should('be.visible')
+        })
+
+        it('page allows to give up, shows solution', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
+            cy.visit('http://localhost:3000')
+
+            cy.get('#keyboardR').click()
+            cy.get('#keyboardE').click()
+            cy.get('#keyboardA').click()
+            cy.get('#keyboardD').click()
+            cy.get('#keyboardS').click()
+            cy.get('#submitButton').should('not.be.disabled')
+            cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
+
+            cy.get('#giveUpButton').click()
+
+            cy.get('#messageDiv').should('include.text', 'Solution was:')
+
+            cy.get('#submitButton').should('be.disabled')
+            cy.get('#giveUpButton').should('be.disabled')
+            cy.get('#shareResultsButton').should('be.visible')
         })
 
         it('new game button clears game', function () {
@@ -229,6 +257,7 @@ describe('Game functionality', function () {
             cy.get('@hintLetters').eq(2).should('have.text', empty)
             cy.get('@hintLetters').eq(3).should('have.text', empty)
             cy.get('@hintLetters').eq(4).should('have.text', empty)
+            cy.get('#shareResultsButton').should('not.be.visible')
         })
     })
 
@@ -412,6 +441,59 @@ describe('Game functionality', function () {
             cy.get('#keyboardK').click()
             cy.get('#keyboardY').click()
             cy.get('#submitButton').should('not.be.disabled')
+        })
+
+        it('after winning, share results button delivers correct data', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
+            cy.visit(`http://localhost:3000/${wordIdAbout}`)
+            cy.get('#keyboardT').click()
+            cy.get('#keyboardH').click()
+            cy.get('#keyboardO').click()
+            cy.get('#keyboardS').click()
+            cy.get('#keyboardE').click()
+            cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
+
+            cy.get('#keyboardA').click()
+            cy.get('#keyboardB').click()
+            cy.get('#keyboardO').click()
+            cy.get('#keyboardU').click()
+            cy.get('#keyboardT').click()
+            cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
+
+            cy.get('#submitButton').should('be.disabled')
+            cy.get('#giveUpButton').should('be.disabled')
+
+            cy.get('#shareResultsButton').click()
+            cy.get('#messageDiv').should('have.text', 'Results copied to clipboard!')
+            cy.assertTextValueContainedInClipboard(`Wordle (using React)\n2/6\n🟨⬛🟩⬛⬛\n🟩🟩🟩🟩🟩\nhttp://localhost:3000/${wordIdAbout}`)
+        })
+
+        it('after giving up, share results button delivers correct data', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
+            cy.visit(`http://localhost:3000/${wordIdAbout}`)
+            cy.get('#keyboardT').click()
+            cy.get('#keyboardH').click()
+            cy.get('#keyboardO').click()
+            cy.get('#keyboardS').click()
+            cy.get('#keyboardE').click()
+            cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
+
+            cy.get('#giveUpButton').click()
+
+            cy.get('#shareResultsButton').click()
+            cy.get('#messageDiv').should('have.text', 'Results copied to clipboard!')
+            cy.assertTextValueContainedInClipboard(`Wordle (using React)\n💩/6\n🟨⬛🟩⬛⬛\nhttp://localhost:3000/${wordIdAbout}`)
         })
     })
 

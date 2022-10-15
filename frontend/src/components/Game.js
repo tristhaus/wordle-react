@@ -94,8 +94,7 @@ const Game = ({
     }
 
     const handleAddGuessLetter = letter => {
-        if(gameState === state.playing)
-        {
+        if (gameState === state.playing) {
             setMessage('')
         }
 
@@ -107,8 +106,7 @@ const Game = ({
     }
 
     const handleRemoveGuessLetter = () => {
-        if(gameState === state.playing)
-        {
+        if (gameState === state.playing) {
             setMessage('')
         }
 
@@ -124,8 +122,34 @@ const Game = ({
         setMessage('Link copied to clipboard!')
     }
 
+    const handleShareResults = () => {
+
+        const title = 'Wordle (using React)'
+
+        const result = gameState === state.solved ? allHints.length : '💩'
+        const resultLine = `${result}/6`
+
+        const hintLines = allHints.map(line => line.map(data => {
+            if (data.status === 'unused') {
+                return '⬛'
+            }
+            else if (data.status === 'elsewhere') {
+                return '🟨'
+            }
+            else {
+                return '🟩'
+            }
+        }).join('')
+        ).join('\n')
+
+        const totalContent = [title, resultLine, hintLines, shareUrl].join('\n')
+        navigator.clipboard.writeText(totalContent)
+        setMessage('Results copied to clipboard!')
+    }
+
     const submitIsDisabled = guess.length !== 5 || gameState !== state.playing
     const giveUpIsDisabled = gameState !== state.playing
+    const shareResultsDisplay = gameState === state.playing ? 'none' : 'inline'
 
     return (<div style={{ marginRight: 'auto', marginLeft: 'auto', width: '400px' }}>
         <div style={{ textAlign: 'center' }}>
@@ -141,6 +165,7 @@ const Game = ({
             <button id="newGameButton" style={{ margin: '0.5em' }} onClick={handleNewGame}>New game</button>
             <br />
             <button id="shareLinkButton" style={{ margin: '0.5em' }} onClick={handleShareLink}>Share game</button>
+            <button id="shareResultsButton" style={{ margin: '0.5em', display: shareResultsDisplay }} onClick={handleShareResults}>Share results</button>
         </div>
     </div>
     )
