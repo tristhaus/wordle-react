@@ -1,0 +1,98 @@
+* {
+  font-family: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+}
+
+.root {
+  margin-right: auto;
+  margin-left: auto;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.hintArea,
+.keyboardArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px
+}
+
+.hintLine,
+.keyboardLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.hintLine {
+  gap: 10px;
+  height: 30px
+}
+
+.keyboardLine {
+  gap: 6px;
+  height: 30px
+}
+
+.hintLetter,
+.keyboardButton {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hintLetter {
+  width: 30px;
+  height: 30px;
+  border: solid;
+  border-color: black;
+  border-width: 1px;
+}
+
+.keyboardButton {
+  width: 30px;
+  height: 30px;
+}
+
+.unused {
+  background-color: rgb(160, 160, 160);
+}
+
+.elsewhere {
+  background-color: rgb(233, 233, 37);
+}
+
+.correct {
+  background-color: rgb(10, 110, 10);
+}
+
+.neverGuessed {
+  background-color: white;
+}
+
+.message {
+  min-height: 16px;
+  margin: 16px;
+  text-align: center;
+}
+
+.buttonArea {
+  margin: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.button {
+  margin: 8px;
+  background-color: rgb(218, 235, 255);
+  border-radius: 4px;
+  padding: 6px 15px;
+}
+
+.hidden {
+  display: none;
+}

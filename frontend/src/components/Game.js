@@ -149,23 +149,24 @@ const Game = ({
 
     const submitIsDisabled = guess.length !== 5 || gameState !== state.playing
     const giveUpIsDisabled = gameState !== state.playing
-    const shareResultsDisplay = gameState === state.playing ? 'none' : 'inline'
+    const hideShareResultsClassName = gameState === state.playing ? 'hidden' : ''
 
-    return (<div style={{ marginRight: 'auto', marginLeft: 'auto', width: '400px' }}>
-        <div style={{ textAlign: 'center' }}>
-            <HintArea allHints={allHints} guess={guess} />
-        </div>
-        <div id="messageDiv" style={{ minHeight: '1.2em', margin: '0.5em', textAlign: 'center' }} >{message}</div>
-        <div style={{ textAlign: 'center' }}>
-            <KeyboardArea allHints={allHints} addGuessLetter={handleAddGuessLetter} removeGuessLetter={handleRemoveGuessLetter} />
-            <br />
-            <button id="submitButton" disabled={submitIsDisabled} style={{ margin: '0.5em' }} onClick={handleSubmit}>Submit</button>
-            <br />
-            <button id="giveUpButton" disabled={giveUpIsDisabled} style={{ margin: '0.5em' }} onClick={handleGiveUp}>Give up</button>
-            <button id="newGameButton" style={{ margin: '0.5em' }} onClick={handleNewGame}>New game</button>
-            <br />
-            <button id="shareLinkButton" style={{ margin: '0.5em' }} onClick={handleShareLink}>Share game</button>
-            <button id="shareResultsButton" style={{ margin: '0.5em', display: shareResultsDisplay }} onClick={handleShareResults}>Share results</button>
+    return (<div className="root">
+        <HintArea allHints={allHints} guess={guess} />
+        <div id="messageDiv" className="message root-child">{message}</div>
+        <KeyboardArea allHints={allHints} addGuessLetter={handleAddGuessLetter} removeGuessLetter={handleRemoveGuessLetter} />
+        <div className="buttonArea root-child">
+            <div>
+                <button id="submitButton" disabled={submitIsDisabled} className="button" onClick={handleSubmit}>Submit</button>
+            </div>
+            <div>
+                <button id="giveUpButton" disabled={giveUpIsDisabled} className="button" onClick={handleGiveUp}>Give up</button>
+                <button id="newGameButton" className="button" onClick={handleNewGame}>New game</button>
+            </div>
+            <div>
+                <button id="shareLinkButton" className="button" onClick={handleShareLink}>Share game</button>
+                <button id="shareResultsButton" className={`button ${hideShareResultsClassName}`} onClick={handleShareResults}>Share results</button>
+            </div>
         </div>
     </div>
     )

@@ -1,11 +1,9 @@
 describe('Game functionality', function () {
 
-    const empty = '\u200b'
-
-    const colorUnused = 'rgb(128, 128, 128)' // gray
-    const colorElsewhere = 'rgb(255, 255, 0)' // yellow
-    const colorCorrect = 'rgb(0, 128, 0)' // green
-    const colorNeverGuessed = 'rgb(255, 255, 255)' // white
+    const colorUnused = 'rgb(160, 160, 160)'
+    const colorElsewhere = 'rgb(233, 233, 37)'
+    const colorCorrect = 'rgb(10, 110, 10)'
+    const colorNeverGuessed = 'rgb(255, 255, 255)'
 
     Cypress.Commands.add('assertTextValueContainedInClipboard', value => {
         cy.window().then(win => {
@@ -20,7 +18,7 @@ describe('Game functionality', function () {
         it('page can be opened and is initially empty, has friendly message', function () {
             cy.visit('http://localhost:3000')
 
-            cy.get('.hintArea').find('.hintLetter').each(value => cy.wrap(value).should('have.text', empty))
+            cy.get('.hintArea').find('.hintLetter').each(value => cy.wrap(value).should('be.empty'))
             cy.get('.keyboardArea').find('.keyboardButton').each(value => cy.wrap(value).should('have.css', 'background-color', colorNeverGuessed))
             cy.get('#messageDiv').should('have.text', 'Make your first guess!')
             cy.get('#shareResultsButton').should('not.be.visible')
@@ -33,11 +31,11 @@ describe('Game functionality', function () {
             cy.get('#keyboardA').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'r')
-            cy.get('@hintLetters').eq(1).should('have.text', 'e')
-            cy.get('@hintLetters').eq(2).should('have.text', 'a')
-            cy.get('@hintLetters').eq(3).should('have.text', empty)
-            cy.get('@hintLetters').eq(4).should('have.text', empty)
+            cy.get('@hintLetters').eq(0).should('have.text', 'R')
+            cy.get('@hintLetters').eq(1).should('have.text', 'E')
+            cy.get('@hintLetters').eq(2).should('have.text', 'A')
+            cy.get('@hintLetters').eq(3).should('be.empty')
+            cy.get('@hintLetters').eq(4).should('be.empty')
         })
 
         it('page allows to edit input', function () {
@@ -47,30 +45,30 @@ describe('Game functionality', function () {
             cy.get('#keyboardA').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'r')
-            cy.get('@hintLetters').eq(1).should('have.text', 'e')
-            cy.get('@hintLetters').eq(2).should('have.text', 'a')
-            cy.get('@hintLetters').eq(3).should('have.text', empty)
-            cy.get('@hintLetters').eq(4).should('have.text', empty)
+            cy.get('@hintLetters').eq(0).should('have.text', 'R')
+            cy.get('@hintLetters').eq(1).should('have.text', 'E')
+            cy.get('@hintLetters').eq(2).should('have.text', 'A')
+            cy.get('@hintLetters').eq(3).should('be.empty')
+            cy.get('@hintLetters').eq(4).should('be.empty')
 
             cy.get('#keyboardD').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'r')
-            cy.get('@hintLetters').eq(1).should('have.text', 'e')
-            cy.get('@hintLetters').eq(2).should('have.text', 'a')
-            cy.get('@hintLetters').eq(3).should('have.text', 'd')
-            cy.get('@hintLetters').eq(4).should('have.text', empty)
+            cy.get('@hintLetters').eq(0).should('have.text', 'R')
+            cy.get('@hintLetters').eq(1).should('have.text', 'E')
+            cy.get('@hintLetters').eq(2).should('have.text', 'A')
+            cy.get('@hintLetters').eq(3).should('have.text', 'D')
+            cy.get('@hintLetters').eq(4).should('be.empty')
 
             cy.get('#keyboardDel').click()
             cy.get('#keyboardDel').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'r')
-            cy.get('@hintLetters').eq(1).should('have.text', 'e')
-            cy.get('@hintLetters').eq(2).should('have.text', empty)
-            cy.get('@hintLetters').eq(3).should('have.text', empty)
-            cy.get('@hintLetters').eq(4).should('have.text', empty)
+            cy.get('@hintLetters').eq(0).should('have.text', 'R')
+            cy.get('@hintLetters').eq(1).should('have.text', 'E')
+            cy.get('@hintLetters').eq(2).should('be.empty')
+            cy.get('@hintLetters').eq(3).should('be.empty')
+            cy.get('@hintLetters').eq(4).should('be.empty')
         })
 
         it('submit button is enabled/disabled correctly', function () {
@@ -98,11 +96,11 @@ describe('Game functionality', function () {
             cy.get('#submitButton').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'r').and('not.have.css', 'background-color', colorNeverGuessed)
-            cy.get('@hintLetters').eq(1).should('have.text', 'e').and('not.have.css', 'background-color', colorNeverGuessed)
-            cy.get('@hintLetters').eq(2).should('have.text', 'a').and('not.have.css', 'background-color', colorNeverGuessed)
-            cy.get('@hintLetters').eq(3).should('have.text', 'd').and('not.have.css', 'background-color', colorNeverGuessed)
-            cy.get('@hintLetters').eq(4).should('have.text', 's').and('not.have.css', 'background-color', colorNeverGuessed)
+            cy.get('@hintLetters').eq(0).should('have.text', 'R').and('not.have.css', 'background-color', colorNeverGuessed)
+            cy.get('@hintLetters').eq(1).should('have.text', 'E').and('not.have.css', 'background-color', colorNeverGuessed)
+            cy.get('@hintLetters').eq(2).should('have.text', 'A').and('not.have.css', 'background-color', colorNeverGuessed)
+            cy.get('@hintLetters').eq(3).should('have.text', 'D').and('not.have.css', 'background-color', colorNeverGuessed)
+            cy.get('@hintLetters').eq(4).should('have.text', 'S').and('not.have.css', 'background-color', colorNeverGuessed)
 
             cy.get('#keyboardR').and('not.have.css', 'background-color', colorNeverGuessed)
             cy.get('#keyboardE').and('not.have.css', 'background-color', colorNeverGuessed)
@@ -132,17 +130,17 @@ describe('Game functionality', function () {
             cy.get('#keyboardE').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'r')
-            cy.get('@hintLetters').eq(1).should('have.text', 'e')
-            cy.get('@hintLetters').eq(2).should('have.text', 'a')
-            cy.get('@hintLetters').eq(3).should('have.text', 'd')
-            cy.get('@hintLetters').eq(4).should('have.text', 's')
+            cy.get('@hintLetters').eq(0).should('have.text', 'R')
+            cy.get('@hintLetters').eq(1).should('have.text', 'E')
+            cy.get('@hintLetters').eq(2).should('have.text', 'A')
+            cy.get('@hintLetters').eq(3).should('have.text', 'D')
+            cy.get('@hintLetters').eq(4).should('have.text', 'S')
 
-            cy.get('@hintLetters').eq(5).should('have.text', 'm')
-            cy.get('@hintLetters').eq(6).should('have.text', 'o')
-            cy.get('@hintLetters').eq(7).should('have.text', 'r')
-            cy.get('@hintLetters').eq(8).should('have.text', 'e')
-            cy.get('@hintLetters').eq(9).should('have.text', empty)
+            cy.get('@hintLetters').eq(5).should('have.text', 'M')
+            cy.get('@hintLetters').eq(6).should('have.text', 'O')
+            cy.get('@hintLetters').eq(7).should('have.text', 'R')
+            cy.get('@hintLetters').eq(8).should('have.text', 'E')
+            cy.get('@hintLetters').eq(9).should('be.empty')
         })
 
         it('on input submitted that is not a word, page shows error message', function () {
@@ -155,11 +153,11 @@ describe('Game functionality', function () {
             cy.get('#submitButton').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', empty)
-            cy.get('@hintLetters').eq(1).should('have.text', empty)
-            cy.get('@hintLetters').eq(2).should('have.text', empty)
-            cy.get('@hintLetters').eq(3).should('have.text', empty)
-            cy.get('@hintLetters').eq(4).should('have.text', empty)
+            cy.get('@hintLetters').eq(0).should('be.empty')
+            cy.get('@hintLetters').eq(1).should('be.empty')
+            cy.get('@hintLetters').eq(2).should('be.empty')
+            cy.get('@hintLetters').eq(3).should('be.empty')
+            cy.get('@hintLetters').eq(4).should('be.empty')
 
             cy.get('#messageDiv').should('have.text', '"xxxxx" is not a valid word')
         })
@@ -244,19 +242,19 @@ describe('Game functionality', function () {
             })
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'r')
-            cy.get('@hintLetters').eq(1).should('have.text', 'e')
-            cy.get('@hintLetters').eq(2).should('have.text', 'a')
-            cy.get('@hintLetters').eq(3).should('have.text', 'd')
-            cy.get('@hintLetters').eq(4).should('have.text', 's')
+            cy.get('@hintLetters').eq(0).should('have.text', 'R')
+            cy.get('@hintLetters').eq(1).should('have.text', 'E')
+            cy.get('@hintLetters').eq(2).should('have.text', 'A')
+            cy.get('@hintLetters').eq(3).should('have.text', 'D')
+            cy.get('@hintLetters').eq(4).should('have.text', 'S')
 
             cy.get('#newGameButton').click()
 
-            cy.get('@hintLetters').eq(0).should('have.text', empty)
-            cy.get('@hintLetters').eq(1).should('have.text', empty)
-            cy.get('@hintLetters').eq(2).should('have.text', empty)
-            cy.get('@hintLetters').eq(3).should('have.text', empty)
-            cy.get('@hintLetters').eq(4).should('have.text', empty)
+            cy.get('@hintLetters').eq(0).should('be.empty')
+            cy.get('@hintLetters').eq(1).should('be.empty')
+            cy.get('@hintLetters').eq(2).should('be.empty')
+            cy.get('@hintLetters').eq(3).should('be.empty')
+            cy.get('@hintLetters').eq(4).should('be.empty')
             cy.get('#shareResultsButton').should('not.be.visible')
         })
     })
@@ -275,11 +273,11 @@ describe('Game functionality', function () {
             cy.get('#submitButton').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'a').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(1).should('have.text', 'b').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(2).should('have.text', 'o').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(3).should('have.text', 'u').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(4).should('have.text', 't').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(0).should('have.text', 'A').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(1).should('have.text', 'B').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(2).should('have.text', 'O').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(3).should('have.text', 'U').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(4).should('have.text', 'T').and('have.css', 'background-color', colorCorrect)
             cy.get('#messageDiv').should('include.text', 'Congratulations!')
         })
 
@@ -322,11 +320,11 @@ describe('Game functionality', function () {
             cy.get('#submitButton').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 't').should('have.css', 'background-color', colorElsewhere)
-            cy.get('@hintLetters').eq(1).should('have.text', 'h').should('have.css', 'background-color', colorUnused)
-            cy.get('@hintLetters').eq(2).should('have.text', 'o').should('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(3).should('have.text', 's').should('have.css', 'background-color', colorUnused)
-            cy.get('@hintLetters').eq(4).should('have.text', 'e').should('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(0).should('have.text', 'T').should('have.css', 'background-color', colorElsewhere)
+            cy.get('@hintLetters').eq(1).should('have.text', 'H').should('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(2).should('have.text', 'O').should('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(3).should('have.text', 'S').should('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(4).should('have.text', 'E').should('have.css', 'background-color', colorUnused)
 
             cy.get('#keyboardT').and('have.css', 'background-color', colorElsewhere)
             cy.get('#keyboardH').and('have.css', 'background-color', colorUnused)
@@ -359,17 +357,17 @@ describe('Game functionality', function () {
             cy.wait('@submitGuess')
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 't').and('have.css', 'background-color', colorElsewhere)
-            cy.get('@hintLetters').eq(1).should('have.text', 'h').and('have.css', 'background-color', colorUnused)
-            cy.get('@hintLetters').eq(2).should('have.text', 'o').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(3).should('have.text', 's').and('have.css', 'background-color', colorUnused)
-            cy.get('@hintLetters').eq(4).should('have.text', 'e').and('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(0).should('have.text', 'T').and('have.css', 'background-color', colorElsewhere)
+            cy.get('@hintLetters').eq(1).should('have.text', 'H').and('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(2).should('have.text', 'O').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(3).should('have.text', 'S').and('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(4).should('have.text', 'E').and('have.css', 'background-color', colorUnused)
 
-            cy.get('@hintLetters').eq(5).should('have.text', 'a').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(6).should('have.text', 'b').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(7).should('have.text', 'o').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(8).should('have.text', 'u').and('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(9).should('have.text', 't').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(5).should('have.text', 'A').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(6).should('have.text', 'B').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(7).should('have.text', 'O').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(8).should('have.text', 'U').and('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(9).should('have.text', 'T').and('have.css', 'background-color', colorCorrect)
 
             cy.get('#submitButton').should('be.disabled')
             cy.get('#giveUpButton').should('be.disabled')
@@ -386,11 +384,11 @@ describe('Game functionality', function () {
             cy.get('#submitButton').click()
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
-            cy.get('@hintLetters').eq(0).should('have.text', 'b').should('have.css', 'background-color', colorElsewhere)
-            cy.get('@hintLetters').eq(1).should('have.text', 'o').should('have.css', 'background-color', colorUnused)
-            cy.get('@hintLetters').eq(2).should('have.text', 'o').should('have.css', 'background-color', colorCorrect)
-            cy.get('@hintLetters').eq(3).should('have.text', 't').should('have.css', 'background-color', colorElsewhere)
-            cy.get('@hintLetters').eq(4).should('have.text', 's').should('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(0).should('have.text', 'B').should('have.css', 'background-color', colorElsewhere)
+            cy.get('@hintLetters').eq(1).should('have.text', 'O').should('have.css', 'background-color', colorUnused)
+            cy.get('@hintLetters').eq(2).should('have.text', 'O').should('have.css', 'background-color', colorCorrect)
+            cy.get('@hintLetters').eq(3).should('have.text', 'T').should('have.css', 'background-color', colorElsewhere)
+            cy.get('@hintLetters').eq(4).should('have.text', 'S').should('have.css', 'background-color', colorUnused)
 
             cy.get('#keyboardB').and('have.css', 'background-color', colorElsewhere)
             cy.get('#keyboardO').and('have.css', 'background-color', colorCorrect)

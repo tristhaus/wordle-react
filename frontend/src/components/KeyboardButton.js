@@ -5,30 +5,21 @@ const elsewhere = 'elsewhere'
 const correct = 'correct'
 
 const KeyboardButton = ({ id, label, status, action }) => {
-    const style = {
-        paddingTop: 7,
-        paddingBottom: 7,
-        paddingLeft: 7,
-        paddingRight: 7,
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: 5,
-        marginRight: 5,
-        backgroundColor: 'white',
-        fontFamily: 'sans-serif'
-    }
+
+    let resultClassName = 'neverGuessed'
 
     if (status === unused) {
-        style.backgroundColor = 'gray'
-    } else if (status === elsewhere) {
-        style.backgroundColor = 'yellow'
+        resultClassName = 'unused'
+    }
+    else if (status === elsewhere) {
+        resultClassName = 'elsewhere'
     }
     else if (status === correct) {
-        style.backgroundColor = 'green'
+        resultClassName = 'correct'
     }
 
     return (
-        <button id={id} className="keyboardButton" style={style} onClick={action}>{label}</button>
+        <button id={id} className={`keyboardButton ${resultClassName}`} onClick={action}>{label}</button>
     )
 }
 

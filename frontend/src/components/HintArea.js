@@ -17,7 +17,7 @@ const HintArea = ({ allHints, guess }) => {
         .concat(Array(Math.max(5 - allHints.length, 0)).fill('free'))
 
     return (
-        <div className='hintArea'>
+        <div className="hintArea">
             <HintLine data={data[0]} lineType={lineType[0]} />
             <HintLine data={data[1]} lineType={lineType[1]} />
             <HintLine data={data[2]} lineType={lineType[2]} />
