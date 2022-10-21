@@ -1,10 +1,6 @@
 import { PropTypes } from 'prop-types'
+import { LetterState } from '../immutable/state'
 import KeyboardButton from './KeyboardButton'
-
-const unused = 'unused'
-const elsewhere = 'elsewhere'
-const correct = 'correct'
-const neverGuessed = 'neverGuessed'
 
 const KeyboardArea = ({ allHints, addGuessLetter, removeGuessLetter }) => {
 
@@ -13,7 +9,7 @@ const KeyboardArea = ({ allHints, addGuessLetter, removeGuessLetter }) => {
             return allHints.some(hintSet => hintSet.some(hint => hint.letter === letter && hint.status === value)) ? value : null
         }
 
-        return evaluation(correct) || evaluation(elsewhere) || evaluation(unused) || neverGuessed
+        return evaluation(LetterState.correct) || evaluation(LetterState.elsewhere) || evaluation(LetterState.unused) || LetterState.neverGuessed
     }
 
     return (
@@ -42,7 +38,7 @@ const KeyboardArea = ({ allHints, addGuessLetter, removeGuessLetter }) => {
                 <KeyboardButton id="keyboardL" label={'L'} status={getStatus('l')} action={() => { addGuessLetter('l') }} />
             </div>
             <div className='keyboardLine'>
-                <KeyboardButton id="keyboardDel" label={'⌫'} status={neverGuessed} action={removeGuessLetter} />
+                <KeyboardButton id="keyboardDel" label={'⌫'} status={LetterState.neverGuessed} action={removeGuessLetter} />
                 <KeyboardButton id="keyboardZ" label={'Z'} status={getStatus('z')} action={() => { addGuessLetter('z') }} />
                 <KeyboardButton id="keyboardX" label={'X'} status={getStatus('x')} action={() => { addGuessLetter('x') }} />
                 <KeyboardButton id="keyboardC" label={'C'} status={getStatus('c')} action={() => { addGuessLetter('c') }} />

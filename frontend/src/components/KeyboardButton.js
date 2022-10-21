@@ -1,22 +1,8 @@
 import { PropTypes } from 'prop-types'
 
-const unused = 'unused'
-const elsewhere = 'elsewhere'
-const correct = 'correct'
-
 const KeyboardButton = ({ id, label, status, action }) => {
 
-    let resultClassName = 'neverGuessed'
-
-    if (status === unused) {
-        resultClassName = 'unused'
-    }
-    else if (status === elsewhere) {
-        resultClassName = 'elsewhere'
-    }
-    else if (status === correct) {
-        resultClassName = 'correct'
-    }
+    const resultClassName = status
 
     return (
         <button id={id} className={`keyboardButton ${resultClassName}`} onClick={action}>{label}</button>

@@ -1,17 +1,18 @@
 import { PropTypes } from 'prop-types'
+import { LetterState } from '../immutable/state'
 
 const HintLetter = ({ data, lineType }) => {
-    let resultClassName = 'neverGuessed'
+    let resultClassName = LetterState.neverGuessed
 
     if (lineType === 'hint') {
-        if (data.status === 'unused') {
-            resultClassName = 'unused'
+        if (data.status === LetterState.unused) {
+            resultClassName = LetterState.unused
         }
-        else if (data.status === 'elsewhere') {
-            resultClassName = 'elsewhere'
+        else if (data.status === LetterState.elsewhere) {
+            resultClassName = LetterState.elsewhere
         }
         else {
-            resultClassName = 'correct'
+            resultClassName = LetterState.correct
         }
     }
 
