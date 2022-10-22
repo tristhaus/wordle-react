@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const gameSchema = new mongoose.Schema({
     word: String,
     wordId: String,
-    attempts: Number
+    attempts: Number,
+    creationDate: Number,
 })
 
 gameSchema.set('toJSON', {

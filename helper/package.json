@@ -1,0 +1,14 @@
+{
+  "name": "wordle-helper",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+  },
+  "author": "tristhaus",
+  "license": "MIT",
+  "dependencies": {
+    "mongoose": "^6.5.2"
+  },
+  "devDependencies": {
+  }
+}

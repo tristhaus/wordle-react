@@ -29,7 +29,7 @@ gamesRouter.post('/', async (request, response, next) => {
             word = getRandom()
         }
 
-        const game = new Game({ word: word, wordId: getId(word), attempts: 0 })
+        const game = new Game({ word: word, wordId: getId(word), attempts: 0, creationDate: Date.now() })
 
         const result = await game.save()
 
