@@ -12,6 +12,7 @@ const App = () => {
     const [allHints, setAllHints] = useState([])
     const [message, setMessage] = useState('')
     const [shareUrl, setShareUrl] = useState('')
+    const [showHelp, setShowHelp] = useState(false)
 
     return (
         <Router>
@@ -24,6 +25,7 @@ const App = () => {
                         allHints={allHints} setAllHints={setAllHints}
                         message={message} setMessage={setMessage}
                         shareUrl={shareUrl} setShareUrl={setShareUrl}
+                        showHelp={showHelp} setShowHelp={setShowHelp}
                     />
                 } />
                 <Route path="/" element={
@@ -34,6 +36,7 @@ const App = () => {
                         allHints={allHints} setAllHints={setAllHints}
                         message={message} setMessage={setMessage}
                         shareUrl={shareUrl} setShareUrl={setShareUrl}
+                        showHelp={showHelp} setShowHelp={setShowHelp}
                     />
                 } />
             </Routes>

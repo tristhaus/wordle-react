@@ -3,12 +3,55 @@
 }
 
 .root {
+  margin-top: 20px;
   margin-right: auto;
   margin-left: auto;
   width: 400px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.helpButtonArea {
+  display: block;
+  text-align: right;
+}
+
+.helpButton {
+  background-color: rgb(218, 235, 255);
+  margin: 8px;
+  border-radius: 4px;
+  padding: 6px 15px;
+}
+
+.overlayBox {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 80vw;
+  height: 80vh;
+  border-radius: 4px;
+  z-index: 10;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+}
+
+.overlayContent {
+  padding: 10px;
+}
+
+.darkBG {
+  background-color: rgba(0, 0, 0, 0.2);
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
 }
 
 .hintArea,

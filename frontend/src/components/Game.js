@@ -4,6 +4,8 @@ import HintArea from './HintArea'
 import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import KeyboardArea from './KeyboardArea'
+import OverlayMessageBox from './OverlayMessageBox'
+import HelpContent from './HelpContent'
 
 const Game = ({
     gameId, setGameId,
@@ -11,7 +13,8 @@ const Game = ({
     guess, setGuess,
     allHints, setAllHints,
     message, setMessage,
-    shareUrl, setShareUrl }) => {
+    shareUrl, setShareUrl,
+    showHelp, setShowHelp }) => {
 
     const id = useParams().id
 
@@ -141,11 +144,21 @@ const Game = ({
         setMessage('Results copied to clipboard!')
     }
 
+    const toggleShowHelp = () => {
+        setShowHelp(!showHelp)
+    }
+
     const submitIsDisabled = guess.length !== 5 || gameState !== GameState.playing
     const giveUpIsDisabled = gameState !== GameState.playing
     const hideShareResultsClassName = gameState === GameState.playing ? 'hidden' : ''
 
     return (<div className="root">
+        <div className="helpButtonArea">
+            <button className="helpButton" onClick={() => toggleShowHelp()}>?</button>
+        </div>
+        {showHelp && (<OverlayMessageBox label="OK" action={() => toggleShowHelp()} beModal={false}>
+            <HelpContent />
+        </OverlayMessageBox>)}
         <HintArea allHints={allHints} guess={guess} />
         <div id="messageDiv" className="message">{message}</div>
         <KeyboardArea allHints={allHints} addGuessLetter={handleAddGuessLetter} removeGuessLetter={handleRemoveGuessLetter} />

@@ -257,6 +257,32 @@ describe('Game functionality', function () {
             cy.get('@hintLetters').eq(4).should('be.empty')
             cy.get('#shareResultsButton').should('not.be.visible')
         })
+
+        it('help button opens message box with content', function () {
+            cy.visit('http://localhost:3000')
+
+            cy.get('.helpButton').click()
+
+            cy.get('.overlayContent').should('include.text', 'Wordle using React')
+        })
+
+        it('help button opens message box, OK button closes it', function () {
+            cy.visit('http://localhost:3000')
+
+            cy.get('.helpButton').click()
+
+            cy.get('.overlayButton').click()
+            cy.get('.overlayButton').should('not.exist')
+        })
+
+        it('help button opens message box, clicking outside closes it', function () {
+            cy.visit('http://localhost:3000')
+
+            cy.get('.helpButton').click()
+
+            cy.get('.overlayOutside').click({ force: true }) // force not error checking to allow to click through
+            cy.get('.overlayOutside').should('not.exist')
+        })
     })
 
     const wordIdAbout = 'w1lO79SZ7w8kUiyDPOqjAw'
