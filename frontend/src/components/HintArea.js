@@ -1,7 +1,9 @@
-import { PropTypes } from 'prop-types'
+import { useSelector } from 'react-redux'
 import HintLine from './HintLine'
 
-const HintArea = ({ allHints, guess }) => {
+const HintArea = () => {
+    const guess = useSelector(state => state.game.guess)
+    const allHints = useSelector(state => state.game.allHints)
 
     const transformedGuess = guess.split('').map(char => { return { letter: char } })
 
@@ -29,13 +31,5 @@ const HintArea = ({ allHints, guess }) => {
 }
 
 HintArea.displayName = 'HintArea'
-
-HintArea.propTypes = {
-    allHints: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({
-        letter: PropTypes.string.isRequired,
-        status: PropTypes.string.isRequired,
-    }))),
-    guess: PropTypes.string.isRequired,
-}
 
 export default HintArea

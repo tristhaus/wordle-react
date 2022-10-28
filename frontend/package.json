@@ -4,11 +4,14 @@
   "description": "Wordle frontend using React",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.8.6",
     "axios": "^0.27.2",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-redux": "^8.0.4",
     "react-router-dom": "^6.4.1",
+    "redux-thunk": "^2.4.1",
     "web-vitals": "^3.0.2"
   },
   "scripts": {
@@ -39,10 +42,12 @@
   },
   "proxy": "http://localhost:3001",
   "devDependencies": {
+    "@cypress/skip-test": "^2.6.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
-    "cypress": "^10.8.0",
+    "cypress": "^10.11.0",
+    "cypress-cdp": "^1.2.0",
     "eslint": "^8.23.1",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-jest": "^27.0.4",

@@ -1,6 +1,6 @@
 {
   "short_name": "Wordle React",
-  "name": "Wordle using React",
+  "name": "Wordle using React/Redux",
   "icons": [
     {
       "src": "favicon.ico",

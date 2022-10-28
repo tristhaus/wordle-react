@@ -5,10 +5,10 @@ describe('Game functionality', function () {
     const colorCorrect = 'rgb(10, 110, 10)'
     const colorNeverGuessed = 'rgb(255, 255, 255)'
 
-    Cypress.Commands.add('assertTextValueContainedInClipboard', value => {
+    Cypress.Commands.add('assertTextContainedInClipboardToMatchRegex', regex => {
         cy.window().then(win => {
             win.navigator.clipboard.readText().then(text => {
-                expect(text).to.eq(value)
+                expect(text).to.match(regex)
             })
         })
     })
@@ -87,6 +87,11 @@ describe('Game functionality', function () {
         })
 
         it('page acts on submit input and applies colors', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit('http://localhost:3000')
             cy.get('#keyboardR').click()
             cy.get('#keyboardE').click()
@@ -94,6 +99,7 @@ describe('Game functionality', function () {
             cy.get('#keyboardD').click()
             cy.get('#keyboardS').click()
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
             cy.get('@hintLetters').eq(0).should('have.text', 'R').and('not.have.css', 'background-color', colorNeverGuessed)
@@ -144,6 +150,11 @@ describe('Game functionality', function () {
         })
 
         it('on input submitted that is not a word, page shows error message', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit('http://localhost:3000')
             cy.get('#keyboardX').click()
             cy.get('#keyboardX').click()
@@ -151,6 +162,7 @@ describe('Game functionality', function () {
             cy.get('#keyboardX').click()
             cy.get('#keyboardX').click()
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
             cy.get('@hintLetters').eq(0).should('be.empty')
@@ -168,6 +180,11 @@ describe('Game functionality', function () {
                 url: '/api/games/*',
             }).as('submitGuess')
 
+            cy.intercept({
+                method: 'GET',
+                url: '/api/games/*/solution',
+            }).as('fetchSolution')
+
             cy.visit('http://localhost:3000')
 
             var looper = Array.from({ length: 6 }, (value, index) => index)
@@ -181,6 +198,8 @@ describe('Game functionality', function () {
                 cy.get('#submitButton').click()
                 cy.wait('@submitGuess')
             })
+
+            cy.wait('@fetchSolution')
 
             cy.get('#messageDiv').should('include.text', 'Solution was:')
 
@@ -201,6 +220,11 @@ describe('Game functionality', function () {
                 url: '/api/games/*',
             }).as('submitGuess')
 
+            cy.intercept({
+                method: 'GET',
+                url: '/api/games/*/solution',
+            }).as('fetchSolution')
+
             cy.visit('http://localhost:3000')
 
             cy.get('#keyboardR').click()
@@ -213,6 +237,7 @@ describe('Game functionality', function () {
             cy.wait('@submitGuess')
 
             cy.get('#giveUpButton').click()
+            cy.wait('@fetchSolution')
 
             cy.get('#messageDiv').should('include.text', 'Solution was:')
 
@@ -226,6 +251,11 @@ describe('Game functionality', function () {
                 method: 'PUT',
                 url: '/api/games/*',
             }).as('submitGuess')
+
+            cy.intercept({
+                method: 'POST',
+                url: '/api/games',
+            }).as('newGame')
 
             cy.visit('http://localhost:3000')
 
@@ -249,6 +279,7 @@ describe('Game functionality', function () {
             cy.get('@hintLetters').eq(4).should('have.text', 'S')
 
             cy.get('#newGameButton').click()
+            cy.wait('@newGame')
 
             cy.get('@hintLetters').eq(0).should('be.empty')
             cy.get('@hintLetters').eq(1).should('be.empty')
@@ -290,6 +321,11 @@ describe('Game functionality', function () {
     describe('run game on "about"', function () {
 
         it('page can be opened and has correct word', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.get('#keyboardA').click()
             cy.get('#keyboardB').click()
@@ -297,6 +333,7 @@ describe('Game functionality', function () {
             cy.get('#keyboardU').click()
             cy.get('#keyboardT').click()
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
             cy.get('@hintLetters').eq(0).should('have.text', 'A').and('have.css', 'background-color', colorCorrect)
@@ -308,23 +345,30 @@ describe('Game functionality', function () {
         })
 
         it('page can be opened and provides correct link', function () {
+
+            // justification: clipboard apparently not working on http in remote-controlled FF
+            cy.skipOn('firefox')
+
             cy.intercept({
                 method: 'POST',
                 url: '/api/games?wordId=w1lO79SZ7w8kUiyDPOqjAw',
             }).as('startGame')
 
-            const referenceUrl = `http://localhost:3000/${wordIdAbout}`
-
-            cy.visit(referenceUrl)
+            cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.wait('@startGame')
 
             cy.get('#shareLinkButton').click()
 
             cy.get('#messageDiv').should('have.text', 'Link copied to clipboard!')
-            cy.assertTextValueContainedInClipboard(referenceUrl)
+            cy.assertTextContainedInClipboardToMatchRegex(new RegExp(`http://localhost:[0-9]+/${wordIdAbout}`))
         })
 
         it('after winning, the submit button is disabled', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.get('#keyboardA').click()
             cy.get('#keyboardB').click()
@@ -332,11 +376,17 @@ describe('Game functionality', function () {
             cy.get('#keyboardU').click()
             cy.get('#keyboardT').click()
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
             cy.get('#submitButton').should('be.disabled')
         })
 
         it('page acts on submit input and marks it correctly', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.get('#keyboardT').click()
             cy.get('#keyboardH').click()
@@ -344,6 +394,7 @@ describe('Game functionality', function () {
             cy.get('#keyboardS').click()
             cy.get('#keyboardE').click()
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
             cy.get('@hintLetters').eq(0).should('have.text', 'T').should('have.css', 'background-color', colorElsewhere)
@@ -401,6 +452,11 @@ describe('Game functionality', function () {
         })
 
         it('page acts on submit input and uses precedence of information correctly', function () {
+            cy.intercept({
+                method: 'PUT',
+                url: '/api/games/*',
+            }).as('submitGuess')
+
             cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.get('#keyboardB').click()
             cy.get('#keyboardO').click()
@@ -408,6 +464,7 @@ describe('Game functionality', function () {
             cy.get('#keyboardT').click()
             cy.get('#keyboardS').click()
             cy.get('#submitButton').click()
+            cy.wait('@submitGuess')
 
             cy.get('.hintArea').find('.hintLetter').as('hintLetters')
             cy.get('@hintLetters').eq(0).should('have.text', 'B').should('have.css', 'background-color', colorElsewhere)
@@ -468,6 +525,10 @@ describe('Game functionality', function () {
         })
 
         it('after winning, share results button delivers correct data', function () {
+
+            // justification: clipboard apparently not working on http in remote-controlled FF
+            cy.skipOn('firefox')
+
             cy.intercept({
                 method: 'PUT',
                 url: '/api/games/*',
@@ -495,14 +556,23 @@ describe('Game functionality', function () {
 
             cy.get('#shareResultsButton').click()
             cy.get('#messageDiv').should('have.text', 'Results copied to clipboard!')
-            cy.assertTextValueContainedInClipboard(`Wordle (using React)\n2/6\n🟨⬛🟩⬛⬛\n🟩🟩🟩🟩🟩\nhttp://localhost:3000/${wordIdAbout}`)
+            cy.assertTextContainedInClipboardToMatchRegex(new RegExp(`Wordle \\(using React/Redux\\)\\s+2/6\\s+🟨⬛🟩⬛⬛\\s+🟩🟩🟩🟩🟩\\s+http://localhost:[0-9]+/${wordIdAbout}`))
         })
 
         it('after giving up, share results button delivers correct data', function () {
+
+            // justification: clipboard apparently not working on http in remote-controlled FF
+            cy.skipOn('firefox')
+
             cy.intercept({
                 method: 'PUT',
                 url: '/api/games/*',
             }).as('submitGuess')
+
+            cy.intercept({
+                method: 'GET',
+                url: '/api/games/*/solution',
+            }).as('fetchSolution')
 
             cy.visit(`http://localhost:3000/${wordIdAbout}`)
             cy.get('#keyboardT').click()
@@ -514,10 +584,11 @@ describe('Game functionality', function () {
             cy.wait('@submitGuess')
 
             cy.get('#giveUpButton').click()
+            cy.wait('@fetchSolution')
 
             cy.get('#shareResultsButton').click()
             cy.get('#messageDiv').should('have.text', 'Results copied to clipboard!')
-            cy.assertTextValueContainedInClipboard(`Wordle (using React)\n💩/6\n🟨⬛🟩⬛⬛\nhttp://localhost:3000/${wordIdAbout}`)
+            cy.assertTextContainedInClipboardToMatchRegex(new RegExp(`Wordle \\(using React/Redux\\)\\s+💩/6\\s+🟨⬛🟩⬛⬛\\s+http://localhost:[0-9]+/${wordIdAbout}`))
         })
     })
 

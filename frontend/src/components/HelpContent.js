@@ -2,7 +2,7 @@ const HelpContent = () => {
 
     return (
         <div>
-            <h3>Wordle using React</h3>
+            <h3>Wordle using React/Redux</h3>
             <p>
                 by tristhaus, reimplementing <a href="https://www.nytimes.com/games/wordle/index.html">Wordle</a> by <a href="https://twitter.com/powerlanguish">powerlanguage</a>
             </p>
