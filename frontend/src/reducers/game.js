@@ -23,12 +23,39 @@ export const gameSlice = createSlice(
                 state.state = action.payload
             },
 
-            setGuess: (state, action) => {
-                state.guess = action.payload
+            resetGuess: state => {
+                state.guess = ''
             },
 
-            setAllHints: (state, action) => {
-                state.allHints = action.payload
+            addLetterToGuess: (state, action) => {
+
+                if (state.state === GameState.playing) {
+                    state.message = ''
+                }
+
+                if (state.guess.length < 5) {
+                    state.guess = state.guess + action.payload
+                }
+            },
+
+            removeLastLetterFromGuess: state => {
+
+                if (state.state === GameState.playing) {
+                    state.message = ''
+                }
+
+                if (state.guess.length > 0) {
+                    state.guess = state.guess.substring(0, state.guess.length - 1)
+                }
+            },
+
+            resetAllHints: state => {
+                state.allHints = []
+            },
+
+            pushToAllHints: (state, action) => {
+                const newAllHints = state.allHints.concat(action.payload)
+                state.allHints = newAllHints
             },
 
             setMessage: (state, action) => {
@@ -42,10 +69,28 @@ export const gameSlice = createSlice(
     }
 )
 
-const { setGameId, setGameState, setGuess, setAllHints, setShareUrl } = gameSlice.actions
-export const {  setMessage, } = gameSlice.actions
+const { setGameId, setGameState, setShareUrl, resetGuess, resetAllHints, pushToAllHints } = gameSlice.actions
+export const { setMessage, addLetterToGuess, removeLastLetterFromGuess, } = gameSlice.actions
 
 export default gameSlice.reducer
+
+const getSolution = () => {
+    return async (dispatch, getState) => {
+
+        const state = getState()
+        const id = state.game.id
+        const [success, data] = await gameService.getSolution(id)
+
+        if (success) {
+            dispatch(setMessage(`Solution was: ${data.solution}`))
+        }
+        else {
+            dispatch(setMessage(`error "${data.error}"`))
+        }
+
+        dispatch(resetGuess())
+    }
+}
 
 export const fetchGame = id => {
     return async dispatch => {
@@ -62,42 +107,24 @@ export const fetchGame = id => {
     }
 }
 
-export const getSolution = () => {
-    return async (dispatch, getState) => {
-
-        const state = getState()
-        const id = state.game.id
-        const [success, data] = await gameService.getSolution(id)
-
-        if (success) {
-            dispatch(setMessage(`Solution was: ${data.solution}`))
-        }
-        else {
-            dispatch(setMessage(`error "${data.error}"`))
-        }
-
-        dispatch(setGuess(''))
-    }
-}
-
 export const handleSubmit = () => {
     return async (dispatch, getState) => {
 
         const state = getState()
         const gameId = state.game.id
         const guess = state.game.guess
-        const allHints = state.game.allHints
 
         const [success, data] = await gameService.makeGuess(gameId, guess)
 
         if (success) {
-            const newAllHints = allHints.concat([data.hints])
-            dispatch(setAllHints(newAllHints))
+            dispatch(pushToAllHints([data.hints]))
+            const newState = getState()
+            const allHints = newState.game.allHints
 
             if (data.hints.every(hint => hint.status === LetterState.correct)) {
                 dispatch(setGameState(GameState.solved))
                 dispatch(setMessage('Congratulations!'))
-            } else if (newAllHints.length === 6) {
+            } else if (allHints.length === 6) {
                 dispatch(setGameState(GameState.ranOut))
                 dispatch(getSolution())
             } else {
@@ -113,7 +140,7 @@ export const handleSubmit = () => {
             }
         }
 
-        dispatch(setGuess(''))
+        dispatch(resetGuess())
     }
 }
 
@@ -126,48 +153,10 @@ export const handleGiveUp = () => {
 
 export const handleNewGame = () => {
     return dispatch => {
-        dispatch(setGuess(''))
-        dispatch(setAllHints([]))
+        dispatch(resetGuess())
+        dispatch(resetAllHints([]))
         dispatch(setMessage(''))
         dispatch(fetchGame(null))
-    }
-}
-
-export const handleAddGuessLetter = letter => {
-    return (dispatch, getState) => {
-
-        const state = getState()
-        const gameState = state.game.state
-        const guess = state.game.guess
-
-        if (gameState === GameState.playing) {
-            dispatch(setMessage(''))
-        }
-
-        if (guess.length === 5) {
-            return
-        }
-
-        dispatch(setGuess(guess + letter))
-    }
-}
-
-export const handleRemoveGuessLetter = () => {
-    return (dispatch, getState) => {
-
-        const state = getState()
-        const gameState = state.game.state
-        const guess = state.game.guess
-
-        if (gameState === GameState.playing) {
-            dispatch(setMessage(''))
-        }
-
-        if (guess.length === 0) {
-            return
-        }
-
-        dispatch(setGuess(guess.substring(0, guess.length - 1)))
     }
 }
 
