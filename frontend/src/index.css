@@ -142,7 +142,3 @@
 .button:enabled {
   background-color: rgb(218, 235, 255);
 }
-
-.hidden {
-  display: none;
-}

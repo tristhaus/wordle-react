@@ -21,7 +21,7 @@ describe('Game functionality', function () {
             cy.get('.hintArea').find('.hintLetter').each(value => cy.wrap(value).should('be.empty'))
             cy.get('.keyboardArea').find('.keyboardButton').each(value => cy.wrap(value).should('have.css', 'background-color', colorNeverGuessed))
             cy.get('#messageDiv').should('have.text', 'Make your first guess!')
-            cy.get('#shareResultsButton').should('not.be.visible')
+            cy.get('#shareResultsButton').should('not.exist')
         })
 
         it('page accepts input', function () {
@@ -286,7 +286,7 @@ describe('Game functionality', function () {
             cy.get('@hintLetters').eq(2).should('be.empty')
             cy.get('@hintLetters').eq(3).should('be.empty')
             cy.get('@hintLetters').eq(4).should('be.empty')
-            cy.get('#shareResultsButton').should('not.be.visible')
+            cy.get('#shareResultsButton').should('not.exist')
         })
 
         it('help button opens message box with content', function () {
