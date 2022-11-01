@@ -21,18 +21,19 @@ const Game = () => {
 
     const showHelp = useSelector(state => state.showHelp.value)
 
-    return (<div className="root">
-        <div className="helpButtonArea">
-            <button className="helpButton" onClick={() => dispatch(handleToggleShowHelp())}>?</button>
+    return (
+        <div className="root">
+            <div className="helpButtonArea">
+                <button className="helpButton" onClick={() => dispatch(handleToggleShowHelp())}>?</button>
+            </div>
+            {showHelp && (<OverlayMessageBox label="OK" action={() => dispatch(handleToggleShowHelp())} beModal={false}>
+                <HelpContent />
+            </OverlayMessageBox>)}
+            <HintArea />
+            <MessageArea />
+            <KeyboardArea />
+            <ButtonArea />
         </div>
-        {showHelp && (<OverlayMessageBox label="OK" action={() => dispatch(handleToggleShowHelp())} beModal={false}>
-            <HelpContent />
-        </OverlayMessageBox>)}
-        <HintArea />
-        <MessageArea />
-        <KeyboardArea />
-        <ButtonArea />
-    </div>
     )
 }
 

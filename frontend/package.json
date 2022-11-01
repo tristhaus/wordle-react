@@ -47,7 +47,6 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
     "cypress": "^10.11.0",
-    "cypress-cdp": "^1.2.0",
     "eslint": "^8.23.1",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-jest": "^27.0.4",
