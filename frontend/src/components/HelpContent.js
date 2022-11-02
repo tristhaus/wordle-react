@@ -4,7 +4,7 @@ const HelpContent = () => {
         <div>
             <h3>Wordle using React/Redux</h3>
             <p>
-                by tristhaus, reimplementing <a href="https://www.nytimes.com/games/wordle/index.html">Wordle</a> by <a href="https://twitter.com/powerlanguish">powerlanguage</a>
+                by tristhaus, reimplementing <a href="https://www.nytimes.com/games/wordle/index.html">Wordle</a> by <a href="https://twitter.com/powerlanguish">powerlanguage</a>. Code available on <a href="https://github.com/tristhaus/wordle-react">GitHub</a>.
             </p>
             <p>
                 Guess the word in six guesses or fewer.
