@@ -1,6 +1,6 @@
 # Wordle using React/Redux and a backend
 
-Implementation of [Wordle](https://www.nytimes.com/games/wordle/index.html) by [powerlanguage](https://twitter.com/powerlanguish). Deployed at [wordle-react.fly.dev](https://wordle-react.fly.dev).
+Implementation of [Wordle](https://www.nytimes.com/games/wordle/index.html) by [powerlanguage](https://twitter.com/powerlanguish). If deployed, it is at [wordle-react.fly.dev](https://wordle-react.fly.dev).
 
 ![main](/../screenshot/screenshot.png?raw=true)
 
