@@ -5,14 +5,6 @@ describe('Game functionality', function () {
     const colorCorrect = 'rgb(10, 110, 10)'
     const colorNeverGuessed = 'rgb(255, 255, 255)'
 
-    Cypress.Commands.add('assertTextContainedInClipboardToMatchRegex', regex => {
-        cy.window().then(win => {
-            win.navigator.clipboard.readText().then(text => {
-                expect(text).to.match(regex)
-            })
-        })
-    })
-
     describe('basic functionality', function () {
 
         it('page can be opened and is initially empty, has friendly message', function () {
@@ -344,10 +336,7 @@ describe('Game functionality', function () {
             cy.get('#messageDiv').should('include.text', 'Congratulations!')
         })
 
-        it('page can be opened and provides correct link', function () {
-
-            // justification: clipboard apparently not working on http in remote-controlled FF
-            cy.skipOn('firefox')
+        it('page can be opened and provides correct link', { browser: '!firefox' }, function () {
 
             cy.intercept({
                 method: 'POST',
@@ -360,7 +349,10 @@ describe('Game functionality', function () {
             cy.get('#shareLinkButton').click()
 
             cy.get('#messageDiv').should('have.text', 'Link copied to clipboard!')
-            cy.assertTextContainedInClipboardToMatchRegex(new RegExp(`http://localhost:[0-9]+/${wordIdAbout}`))
+
+            cy.window().its('navigator.clipboard')
+                .then(clip => clip.readText())
+                .should('match', new RegExp(`http://localhost:[0-9]+/${wordIdAbout}`))
         })
 
         it('after winning, the submit button is disabled', function () {
@@ -524,10 +516,7 @@ describe('Game functionality', function () {
             cy.get('#submitButton').should('not.be.disabled')
         })
 
-        it('after winning, share results button delivers correct data', function () {
-
-            // justification: clipboard apparently not working on http in remote-controlled FF
-            cy.skipOn('firefox')
+        it('after winning, share results button delivers correct data', { browser: '!firefox' }, function () {
 
             cy.intercept({
                 method: 'PUT',
@@ -556,13 +545,12 @@ describe('Game functionality', function () {
 
             cy.get('#shareResultsButton').click()
             cy.get('#messageDiv').should('have.text', 'Results copied to clipboard!')
-            cy.assertTextContainedInClipboardToMatchRegex(new RegExp(`Wordle \\(using React/Redux\\)\\s+2/6\\s+🟨⬛🟩⬛⬛\\s+🟩🟩🟩🟩🟩\\s+http://localhost:[0-9]+/${wordIdAbout}`))
+            cy.window().its('navigator.clipboard')
+                .then(clip => clip.readText())
+                .should('match', new RegExp(`Wordle \\(using React/Redux\\)\\s+2/6\\s+🟨⬛🟩⬛⬛\\s+🟩🟩🟩🟩🟩\\s+http://localhost:[0-9]+/${wordIdAbout}`))
         })
 
-        it('after giving up, share results button delivers correct data', function () {
-
-            // justification: clipboard apparently not working on http in remote-controlled FF
-            cy.skipOn('firefox')
+        it('after giving up, share results button delivers correct data', { browser: '!firefox' }, function () {
 
             cy.intercept({
                 method: 'PUT',
@@ -588,7 +576,9 @@ describe('Game functionality', function () {
 
             cy.get('#shareResultsButton').click()
             cy.get('#messageDiv').should('have.text', 'Results copied to clipboard!')
-            cy.assertTextContainedInClipboardToMatchRegex(new RegExp(`Wordle \\(using React/Redux\\)\\s+💩/6\\s+🟨⬛🟩⬛⬛\\s+http://localhost:[0-9]+/${wordIdAbout}`))
+            cy.window().its('navigator.clipboard')
+                .then(clip => clip.readText())
+                .should('match', new RegExp(`Wordle \\(using React/Redux\\)\\s+💩/6\\s+🟨⬛🟩⬛⬛\\s+http://localhost:[0-9]+/${wordIdAbout}`))
         })
     })
 
