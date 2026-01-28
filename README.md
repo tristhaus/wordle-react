@@ -1,5 +1,7 @@
 # Wordle using React/Redux and a backend
 
+**Note: the current package config is not secure. The current state should not be deployed.**
+
 Implementation of [Wordle](https://www.nytimes.com/games/wordle/index.html) by [powerlanguage](https://twitter.com/powerlanguish). If deployed, it is at [wordle-react.fly.dev](https://wordle-react.fly.dev).
 
 ![main](/../screenshot/screenshot.png?raw=true)
